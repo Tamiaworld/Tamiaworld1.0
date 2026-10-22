@@ -1,0 +1,493 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#17251c">
+  <meta name="description" content="Otra Vida Launcher: tu acceso a tus mundos de Minecraft.">
+
+  <title>Otra Vida Launcher</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+
+  <style>
+    :root {
+      --fondo: #101812;
+      --panel: #1b2920;
+      --panel2: #24372a;
+      --verde: #68bd75;
+      --texto: #f0f5ef;
+      --suave: #b7c6b9;
+      --borde: #354b39;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 24px 16px;
+      text-align: center;
+      background: #17251c;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      color: var(--suave);
+      margin-bottom: 0;
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      background: var(--panel);
+    }
+
+    button,
+    .boton {
+      border: 1px solid var(--borde);
+      border-radius: 9px;
+      padding: 11px 14px;
+      background: var(--panel2);
+      color: var(--texto);
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover,
+    .boton:hover {
+      border-color: var(--verde);
+    }
+
+    nav button.activo,
+    .principal {
+      background: var(--verde);
+      color: #102014;
+      font-weight: bold;
+    }
+
+    main {
+      width: min(900px, 100%);
+      margin: auto;
+      padding: 18px;
+    }
+
+    .pagina {
+      display: none;
+    }
+
+    .pagina.activa {
+      display: block;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--borde);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+
+    .fila {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      margin: 7px 0 14px;
+      background: #0e1711;
+      color: var(--texto);
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+    }
+
+    label {
+      display: block;
+      color: var(--suave);
+      margin-top: 10px;
+    }
+
+    .estado {
+      color: var(--verde);
+      font-weight: bold;
+    }
+
+    footer {
+      padding: 22px;
+      text-align: center;
+      color: var(--suave);
+      border-top: 1px solid var(--borde);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>⛏️ Otra Vida</h1>
+    <p>Minecraft Launcher</p>
+  </header>
+
+  <nav aria-label="Navegación principal">
+    <button class="activo" onclick="mostrar('inicio', this)">Inicio</button>
+    <button onclick="mostrar('perfil', this)">Perfil</button>
+    <button onclick="mostrar('mundos', this)">Mundos</button>
+    <button onclick="mostrar('recursos', this)">Recursos</button>
+    <button onclick="mostrar('ajustes', this)">Ajustes</button>
+  </nav>
+
+  <main>
+    <section id="inicio" class="pagina activa">
+      <div class="panel">
+        <h2>Bienvenido a Otra Vida</h2>
+        <p>Tu aventura de Minecraft comienza aquí.</p>
+        <p>Versión del launcher: <strong id="version">1.0.0</strong></p>
+        <p>Estado de instalación: <span id="estadoPWA" class="estado">Comprobando...</span></p>
+        <div class="fila">
+          <button class="principal" onclick="abrirMinecraft()">Abrir Minecraft</button>
+          <button id="btnInstalar" onclick="instalarPWA()" hidden>Instalar aplicación</button>
+        </div>
+        <p id="mensaje"></p>
+      </div>
+
+      <div class="panel">
+        <h2>Estadísticas</h2>
+        <label for="statMundos">Mundos creados</label>
+        <input id="statMundos" type="number" min="0" value="0" onchange="guardarEstadistica('Mundos')">
+
+        <label for="statLogros">Logros conseguidos</label>
+        <input id="statLogros" type="number" min="0" value="0" onchange="guardarEstadistica('Logros')">
+
+        <label for="statHoras">Horas jugadas</label>
+        <input id="statHoras" type="number" min="0" value="0" onchange="guardarEstadistica('Horas')">
+      </div>
+    </section>
+
+    <section id="perfil" class="pagina">
+      <div class="panel">
+        <h2>Mi perfil</h2>
+        <label for="nombreJugador">Nombre del jugador</label>
+        <input id="nombreJugador" maxlength="24" placeholder="Escribe tu nombre">
+
+        <label for="avatar">Avatar</label>
+        <select id="avatar">
+          <option value="⛏️">Minero</option>
+          <option value="🧑‍🌾">Granjero</option>
+          <option value="🧙">Aventurero</option>
+          <option value="🛡️">Guerrero</option>
+          <option value="🐺">Lobo</option>
+        </select>
+
+        <button class="principal" onclick="guardarPerfil()">Guardar perfil</button>
+        <p id="perfilResultado"></p>
+      </div>
+    </section>
+
+    <section id="mundos" class="pagina">
+      <div class="panel">
+        <h2>Mis mundos</h2>
+        <p>Registra los mundos que quieres organizar en tu launcher.</p>
+        <label for="nombreMundo">Nombre del mundo</label>
+        <input id="nombreMundo" maxlength="40" placeholder="Ej. Mi primera aventura">
+        <button class="principal" onclick="agregarMundo()">Agregar mundo</button>
+        <ul id="listaMundos"></ul>
+      </div>
+    </section>
+
+    <section id="recursos" class="pagina">
+      <div class="panel">
+        <h2>Recursos</h2>
+        <p>Organiza aquí tus recursos favoritos de Minecraft.</p>
+        <label for="recurso">Nombre del recurso</label>
+        <input id="recurso" maxlength="60" placeholder="Ej. Paquete de texturas">
+        <button class="principal" onclick="agregarRecurso()">Agregar recurso</button>
+        <ul id="listaRecursos"></ul>
+        <p>Descarga mods y paquetes únicamente de sitios confiables y compatibles con tu versión.</p>
+      </div>
+    </section>
+
+    <section id="ajustes" class="pagina">
+      <div class="panel">
+        <h2>Ajustes</h2>
+        <label for="tema">Tema de la aplicación</label>
+        <select id="tema" onchange="cambiarTema()">
+          <option value="oscuro">Oscuro</option>
+          <option value="claro">Claro</option>
+        </select>
+        <button onclick="exportarDatos()">Exportar copia de seguridad</button>
+        <button onclick="borrarDatos()">Borrar datos guardados</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Otra Vida Launcher · Proyecto independiente de Minecraft
+  </footer>
+
+  <script>
+    let eventoInstalacion = null;
+
+    function mostrar(id, boton) {
+      document.querySelectorAll(".pagina").forEach(pagina => {
+        pagina.classList.remove("activa");
+      });
+
+      document.getElementById(id).classList.add("activa");
+
+      document.querySelectorAll("nav button").forEach(btn => {
+        btn.classList.remove("activo");
+      });
+
+      boton.classList.add("activo");
+    }
+
+    function guardarEstadistica(nombre) {
+      const campo = document.getElementById("stat" + nombre);
+      campo.value = Math.max(0, Number(campo.value) || 0);
+      localStorage.setItem("launcherStat" + nombre, campo.value);
+    }
+
+    function guardarPerfil() {
+      const nombre = document.getElementById("nombreJugador").value.trim();
+      const avatar = document.getElementById("avatar").value;
+
+      localStorage.setItem("launcherNombre", nombre);
+      localStorage.setItem("launcherAvatar", avatar);
+
+      document.getElementById("perfilResultado").textContent =
+        avatar + " Perfil guardado: " + (nombre || "Jugador");
+    }
+
+    function agregarMundo() {
+      const campo = document.getElementById("nombreMundo");
+      const nombre = campo.value.trim();
+
+      if (!nombre) {
+        alert("Escribe un nombre para el mundo.");
+        return;
+      }
+
+      const mundos = JSON.parse(localStorage.getItem("launcherMundos") || "[]");
+      mundos.push(nombre);
+      localStorage.setItem("launcherMundos", JSON.stringify(mundos));
+      campo.value = "";
+      renderMundos();
+    }
+
+    function renderMundos() {
+      const lista = document.getElementById("listaMundos");
+      lista.replaceChildren();
+
+      const mundos = JSON.parse(localStorage.getItem("launcherMundos") || "[]");
+
+      mundos.forEach((mundo, indice) => {
+        const elemento = document.createElement("li");
+        elemento.append(document.createTextNode(mundo + " "));
+
+        const boton = document.createElement("button");
+        boton.textContent = "Eliminar";
+        boton.onclick = () => {
+          mundos.splice(indice, 1);
+          localStorage.setItem("launcherMundos", JSON.stringify(mundos));
+          renderMundos();
+        };
+
+        elemento.append(boton);
+        lista.append(elemento);
+      });
+    }
+
+    function agregarRecurso() {
+      const campo = document.getElementById("recurso");
+      const nombre = campo.value.trim();
+
+      if (!nombre) {
+        alert("Escribe el nombre del recurso.");
+        return;
+      }
+
+      const recursos = JSON.parse(localStorage.getItem("launcherRecursos") || "[]");
+      recursos.push(nombre);
+      localStorage.setItem("launcherRecursos", JSON.stringify(recursos));
+      campo.value = "";
+      renderRecursos();
+    }
+
+    function renderRecursos() {
+      const lista = document.getElementById("listaRecursos");
+      lista.replaceChildren();
+
+      const recursos = JSON.parse(localStorage.getItem("launcherRecursos") || "[]");
+
+      recursos.forEach((recurso, indice) => {
+        const elemento = document.createElement("li");
+        elemento.append(document.createTextNode(recurso + " "));
+
+        const boton = document.createElement("button");
+        boton.textContent = "Eliminar";
+        boton.onclick = () => {
+          recursos.splice(indice, 1);
+          localStorage.setItem("launcherRecursos", JSON.stringify(recursos));
+          renderRecursos();
+        };
+
+        elemento.append(boton);
+        lista.append(elemento);
+      });
+    }
+
+    function cambiarTema() {
+      const tema = document.getElementById("tema").value;
+      localStorage.setItem("launcherTema", tema);
+
+      if (tema === "claro") {
+        document.documentElement.style.setProperty("--fondo", "#eef3ed");
+        document.documentElement.style.setProperty("--panel", "#ffffff");
+        document.documentElement.style.setProperty("--panel2", "#e0e9df");
+        document.documentElement.style.setProperty("--texto", "#18251a");
+        document.documentElement.style.setProperty("--suave", "#526453");
+        document.documentElement.style.setProperty("--borde", "#c7d5c6");
+      } else {
+        document.documentElement.style.setProperty("--fondo", "#101812");
+        document.documentElement.style.setProperty("--panel", "#1b2920");
+        document.documentElement.style.setProperty("--panel2", "#24372a");
+        document.documentElement.style.setProperty("--texto", "#f0f5ef");
+        document.documentElement.style.setProperty("--suave", "#b7c6b9");
+        document.documentElement.style.setProperty("--borde", "#354b39");
+      }
+    }
+
+    function abrirMinecraft() {
+      document.getElementById("mensaje").textContent =
+        "Si Minecraft está instalado, intenta abrirlo desde el dispositivo. Este botón puede no funcionar en todos los equipos.";
+
+      window.location.href = "minecraft://";
+    }
+
+    function exportarDatos() {
+      const datos = {};
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const clave = localStorage.key(i);
+        if (clave && clave.startsWith("launcher")) {
+          datos[clave] = localStorage.getItem(clave);
+        }
+      }
+
+      const archivo = new Blob(
+        [JSON.stringify(datos, null, 2)],
+        { type: "application/json" }
+      );
+
+      const enlace = document.createElement("a");
+      enlace.href = URL.createObjectURL(archivo);
+      enlace.download = "otra-vida-copia.json";
+      enlace.click();
+      URL.revokeObjectURL(enlace.href);
+    }
+
+    function borrarDatos() {
+      if (!confirm("¿Seguro que quieres borrar los datos guardados de Otra Vida?")) {
+        return;
+      }
+
+      Object.keys(localStorage)
+        .filter(clave => clave.startsWith("launcher"))
+        .forEach(clave => localStorage.removeItem(clave));
+
+      location.reload();
+    }
+
+    function actualizarEstadoPWA() {
+      const estado = document.getElementById("estadoPWA");
+
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+        estado.textContent = "Aplicación instalada";
+      } else {
+        estado.textContent = "Abierta en el navegador";
+      }
+    }
+
+    window.addEventListener("beforeinstallprompt", evento => {
+      evento.preventDefault();
+      eventoInstalacion = evento;
+      document.getElementById("btnInstalar").hidden = false;
+    });
+
+    async function instalarPWA() {
+      if (!eventoInstalacion) {
+        alert("Abre esta página desde Chrome con HTTPS para comprobar si se puede instalar.");
+        return;
+      }
+
+      eventoInstalacion.prompt();
+      await eventoInstalacion.userChoice;
+      eventoInstalacion = null;
+      document.getElementById("btnInstalar").hidden = true;
+    }
+
+    function iniciar() {
+      document.getElementById("nombreJugador").value =
+        localStorage.getItem("launcherNombre") || "";
+
+      document.getElementById("avatar").value =
+        localStorage.getItem("launcherAvatar") || "⛏️";
+
+      ["Mundos", "Logros", "Horas"].forEach(nombre => {
+        document.getElementById("stat" + nombre).value =
+          Number(localStorage.getItem("launcherStat" + nombre) || 0);
+      });
+
+      document.getElementById("tema").value =
+        localStorage.getItem("launcherTema") || "oscuro";
+
+      cambiarTema();
+      renderMundos();
+      renderRecursos();
+      actualizarEstadoPWA();
+    }
+
+    if ("serviceWorker" in navigator && window.isSecureContext) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .catch(error => console.error("Error registrando PWA:", error));
+      });
+    }
+
+    iniciar();
+  </script>
+</body>
+</html>
+
+

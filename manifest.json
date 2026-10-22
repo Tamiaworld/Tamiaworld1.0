@@ -1,0 +1,22 @@
+
+{
+  "id": "./",
+  "name": "Otra Vida Launcher",
+  "short_name": "Otra Vida",
+  "description": "Tu espacio para organizar tus aventuras de Minecraft.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101812",
+  "theme_color": "#17251c",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
